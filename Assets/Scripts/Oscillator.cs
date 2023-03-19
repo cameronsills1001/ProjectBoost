@@ -18,8 +18,14 @@ public class Oscillator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(period <= Mathf.Epsilon) {return;}
-        
+        Oscilate();
+
+    }
+
+    void Oscilate()
+    {
+        if (period <= Mathf.Epsilon) { return; }
+
         float cylces = Time.time / period; //continually growning over time
         const float tau = Mathf.PI * 2;
         float rawSinWave = Mathf.Sin(cylces * tau); //going from -1 to 1
@@ -27,9 +33,7 @@ public class Oscillator : MonoBehaviour
 
         movementFactor = (rawSinWave + 1f) / 2f; //recalculated to go from 0 to 1 so it's cleaner
 
-        Vector3  offset = movementVector * movementFactor;
+        Vector3 offset = movementVector * movementFactor;
         transform.position = startingPosition + offset;
-        
-        
     }
 }

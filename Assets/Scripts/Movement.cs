@@ -5,8 +5,9 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     
-    [SerializeField] float mainThrust = 1000f;
-    [SerializeField] float rotationSpeed = 200f;
+    [SerializeField] float mainThrust = 1000f; //force to be applied from the main rocket 
+    [SerializeField] float rotationSpeed = 200f; // force to be applied from the thruster for rotation/steering
+    //audio clips
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip thruster;
 
@@ -14,11 +15,12 @@ public class Movement : MonoBehaviour
     [SerializeField] ParticleSystem leftThrusterParticles;
     [SerializeField] ParticleSystem rightThrusterParticles;
     [SerializeField] ParticleSystem boosterParticles;
+    //light from main rocket
     [SerializeField] Light engineLight;
 
     Rigidbody rb;
-    AudioSource audioSource;
-    AudioSource thrusterAudio;
+    AudioSource audioSource; //audio source for main rocket
+    AudioSource thrusterAudio; //audio source for the thrusters
 
     public bool firstThrustApplied {get; set;} = false; //using for leg suspension to stop raising/lowering as game is starting
 
@@ -28,7 +30,7 @@ public class Movement : MonoBehaviour
     {
         engineLight.enabled = false;
         rb = GetComponent<Rigidbody>();
-        var aSources = GetComponents<AudioSource>();
+        var aSources = GetComponents<AudioSource>(); //making a list of available audio sources
         audioSource = aSources[0];
         thrusterAudio = aSources[1];
         
@@ -48,25 +50,29 @@ public class Movement : MonoBehaviour
 
     void ProcessThrust() 
     {
+        //applying the main rocket
         if (Input.GetKey(KeyCode.Space))
         {
-            StartThrusting();
+            StartMainRocket();
         }
         else
         {
-            StopThrustingEffects();
+            StopMainRocket();
         }
     }
 
-    private void StopThrustingEffects()
+    private void StopMainRocket()
     {
         engineLight.enabled = false;
         audioSource.Stop();
         boosterParticles.Stop();
     }
 
-    void StartThrusting()
+    void StartMainRocket()
     {   
+        // applying force and effects for main rocket
+
+        //keep legs from moving before the thrust is applied
         if (!firstThrustApplied)
         {
             firstThrustApplied = true;
@@ -84,7 +90,7 @@ public class Movement : MonoBehaviour
     }
 
     void ProcessRotation() {
-        
+        //rotate the craft for steering
         if (Input.GetKey(KeyCode.A))
         {
             RotateLeft();
@@ -103,6 +109,7 @@ public class Movement : MonoBehaviour
 
     private void StopRotationEffects()
     {
+        //stop effects applied during rotation
         thrusterAudio.Stop();
         rightThrusterParticles.Stop();
         leftThrusterParticles.Stop();
@@ -110,6 +117,7 @@ public class Movement : MonoBehaviour
 
     private void RotateRight()
     {
+        //roation to the right
         ApplyRotation(-rotationSpeed);
         if (!leftThrusterParticles.isPlaying)
         {
@@ -123,6 +131,7 @@ public class Movement : MonoBehaviour
 
     private void RotateLeft()
     {
+        //roation to the left
         ApplyRotation(rotationSpeed);
         if (!rightThrusterParticles.isPlaying)
         {
@@ -136,31 +145,10 @@ public class Movement : MonoBehaviour
 
     void ApplyRotation(float rotationThisFrame)
     {   
+        // apply the transform rotation to the craft
         rb.freezeRotation = true; //freeze rotation so that manual rotation can take place
         transform.Rotate(Vector3.forward * rotationThisFrame * Time.deltaTime);
         rb.freezeRotation = false; //once again allow physics to rotate 
     }
-
-    void lowerVolume() 
-    {
-        
-        while(audioSource.volume > 0)
-        {
-            audioSource.volume -= 0.1f;
-        }    
-        
-    } 
-
-    void raiseVolume() 
-    {
-        
-        while (audioSource.volume < 0.9f)
-        {
-            audioSource.volume += 0.1f;
-        }     
-        
-    } 
-
-
     
 }

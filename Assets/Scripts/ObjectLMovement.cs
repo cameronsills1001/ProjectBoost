@@ -13,7 +13,7 @@ public class ObjectLMovement : MonoBehaviour
     [SerializeField] float objRightConstraint = -5;
     [SerializeField] float objBottomConstraint = 0;
 
-    int legVariable = 0; //variable to choose which leg of the l shaped journey the object will take
+    int stageVariable = 0; //variable to choose which leg of the l shaped journey the object will take
 
     //pick which method to run based on leg variable
 
@@ -30,12 +30,13 @@ public class ObjectLMovement : MonoBehaviour
     void Update()
     {
         
-        MoveElevator(legVariable);
+        MoveElevator(stageVariable);
     }
 
-    void MoveElevator(int legVariable)
+    void MoveElevator(int stageVariable)
     {
-        switch(legVariable)
+        //using a switch to select what stage of movement 
+        switch(stageVariable)
         {
             case 0:
                 MoveDown();
@@ -56,50 +57,54 @@ public class ObjectLMovement : MonoBehaviour
     }
     void MoveDown()
     {
+        //move down stage
         if (transform.position.y > objBottomConstraint) 
         {
             transform.position -= new Vector3(0, moveSpeed, 0) * Time.deltaTime;
         }
         else
         {
-            legVariable = 1;
+            stageVariable = 1;
         }
         
     }
 
     void MoveUp()
     {
+        //move up stage
         if(transform.position.y < objTopConstraint)
         {
             transform.position += new Vector3(0, moveSpeed, 0) * Time.deltaTime;
         }
         else
         {
-            legVariable = 0;
+            stageVariable = 0;
         }
     }
 
     void MoveRight()
-    {
+    {   
+        //move right stage
         if (transform.position.x < objRightConstraint)
         {
             transform.position += new Vector3(moveSpeed, 0, 0) * Time.deltaTime;
         }
         else
         {
-            legVariable = 2;
+            stageVariable = 2;
         }
     }
 
     void MoveLeft()
     {
+        // move left stage
         if(transform.position.x > objLeftConstraint)
         {
             transform.position -= new Vector3(moveSpeed, 0, 0) * Time.deltaTime;
         }
         else
         {
-            legVariable = 3;
+            stageVariable = 3;
         }
     }
    

@@ -6,18 +6,25 @@ using UnityEngine.SceneManagement;
 public class CollisionHandler : MonoBehaviour
 {
 
-    [SerializeField] float loadLevelDelay = 1.0f;
+    ///<summary>  <summary>
+    [SerializeField] float loadLevelDelay = 1.0f; // Delay from when a player reaches their objective and a new level is loaded
+    //audio clips
     [SerializeField] AudioClip crash;
     [SerializeField] AudioClip success;
+    //particle effects
     [SerializeField] ParticleSystem crashParticles;
     [SerializeField] ParticleSystem successParticles;
 
+    //components
     AudioSource audioSource;
-
     Rigidbody rb;
-    public bool inCollision {get; set;} = false;
 
-    bool isTransitioning = false;
+
+   
+    
+    public bool inCollision {get; private set;} = false;  //public property for signaling landing leg extension/retraction
+
+    bool isTransitioning = false; 
     bool collisionDisabled = false;
 
     bool autoRotationEnabled = false;
@@ -54,22 +61,21 @@ public class CollisionHandler : MonoBehaviour
     {   
         if(isTransitioning || collisionDisabled) {return;}
 
-        //set if in collision or not
+        //set true if in collision
         inCollision = true;
         
         //switch to determine action based on tag of object hit
         switch (other.gameObject.tag) 
         {
             case "Friendly":
-                //Debug.Log("Just a friendly. Nothing to worry about");
-                //
+                //Friendly contacts should not cause any outcome
                 break;
             case "Finish":
-                //Debug.Log("You WON!!!.....maybe");
+                // For touching the landing pad indicating a 'win' for the level
                 StartSuccessSequence();
                 break;
             default:
-                Debug.Log("You just crashed!! We will notify your next of kin");
+                //touching anything not tagged above is a loss
                 StartCrashSequence();
                 break;
 
@@ -77,39 +83,42 @@ public class CollisionHandler : MonoBehaviour
     }
 
     void OnCollisionExit(Collision other) 
-    {
+    {   
+        //signaling the lander legs that the lander is no longer in a collision
         inCollision = false;
     }
 
     
     void StartSuccessSequence()
     {
+        //actions to take for a successful landing
         isTransitioning = true;
         successParticles.Play();
-        audioSource.Stop();
+        audioSource.Stop(); //stop any current audio
         audioSource.PlayOneShot(success);
-        GetComponent<Movement>().enabled = false;
-        autoRotationEnabled = true;
+        GetComponent<Movement>().enabled = false; //diable the players ability to continue to control the craft
+        autoRotationEnabled = true; //signals AutoCorrect to control the ship post win
         Invoke("LoadNextLevel", loadLevelDelay);
             
     }
 
     void StartCrashSequence()
     {
+        //actions to be taken when the ship crashes
         isTransitioning = true;
         crashParticles.Play();
-        audioSource.Stop();
+        audioSource.Stop(); //stop any current audio
         audioSource.PlayOneShot(crash);
-        //add particle effects
         GetComponent<Movement>().enabled = false;
         Invoke("ReloadLevel", loadLevelDelay);
     }
 
-//TODO Correct any movement after a win by making the ship sit level instead of falling over with too much lateral movement before win
     
 
     void AutoCorrect(float currentRotation)
     {
+        //attempt to stop ship from moving and then apply rotation to keep it level after 
+        //a successful landing. This should stop the ship from tumbling or rolling after it has landed. 
         if(currentRotation != Mathf.Epsilon && autoRotationEnabled)
         {
             if (!brakesApplied)
@@ -141,12 +150,15 @@ public class CollisionHandler : MonoBehaviour
 
     void ReloadLevel()
     {
+        //reload the same level in case of a crash
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex);
     }
 
     void LoadNextLevel()
     {
+        //load the next level when player is successful at landing. Will start at 
+        // initial level if last level is complete
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
         if(nextSceneIndex == SceneManager.sceneCountInBuildSettings)
         {

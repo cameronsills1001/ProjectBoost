@@ -6,7 +6,7 @@ public class LandingLightControl : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    ElevatorMovement elevatorScript;
+    ElevatorMovement elevatorScript; //access ElevatorMovement script
     Light landingLight;
     void Start()
     {
@@ -22,7 +22,8 @@ public class LandingLightControl : MonoBehaviour
 
     void LightControl()
     {   
-        
+        //using a switch to select the color of the landing lights depending on the status of the landing pad
+        // case 0 = available/green     case 1 = warning/yellow    case 2 = unavailable/red
         switch(elevatorScript.landingStatus)
         {
             case 0:
