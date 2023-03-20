@@ -114,7 +114,7 @@ public class CollisionHandler : MonoBehaviour
     }
 
     
-
+    //Todo I want to move this to the Movement script
     void AutoCorrect(float currentRotation)
     {
         //attempt to stop ship from moving and then apply rotation to keep it level after 

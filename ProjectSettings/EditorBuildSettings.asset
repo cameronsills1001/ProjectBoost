@@ -5,16 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Environment.unity
     guid: ea6b9c1def1026d4589d9b2ec6044a2c
-  - enabled: 0
-    path: Assets/Scenes/FlyOver.unity
-    guid: ef3310dec0a47ad489597b119d5dcafa
-  - enabled: 0
-    path: Assets/Scenes/FlyUnder.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Sandbox.unity
-    guid: b9859befb6e21bf43ab1ddec1dd5ab31
+    path: Assets/Scenes/Env_Moving_Obj.unity
+    guid: 7b938510c25ef184283fa35204912973
+  - enabled: 1
+    path: Assets/Scenes/HIdden Rebel Base.unity
+    guid: cee37a9eedc890740821257579ebce20
   m_configObjects: {}
